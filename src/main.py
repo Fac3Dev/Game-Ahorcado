@@ -1,5 +1,5 @@
-import pyglet #importando la libreria
-import menu #importa el menu principal
+import pyglet
+import menu
 
 # Se define que se debe hacer cada vez que el tamaño de la ventana cambia
 #@window.event
