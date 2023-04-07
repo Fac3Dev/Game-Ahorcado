@@ -5,23 +5,28 @@ class Menu:
     def __init__(self, window):
         self.window = window
         self.state = 0
-        #Agrega un tipo de letra externo
-        pyglet.font.add_file('../fonts/DeliciousHandrawn_Regular.ttf')
-        #Carga el tipo de letra con el nombre indicado
-        DeliciousHandrawn_Regular = pyglet.font.load('Delicious Handrawn')
-        #Carga ka imagen de fondo del menu principal
-        background_menu = pyglet.image.load('../images/background.png')
-        #Crea un sprite a partir de la imagen cargada
-        background_menu_sprite = pyglet.sprite.Sprite(background_menu)
-        #Asigna el sprite al background del juego
-        self.window.background = background_menu_sprite
-        #Carga la cancion del menu principal
-        main_song = pyglet.media.load('../sounds/creepy_mood.wav', streaming=False)
-        #reproduce la cancion del menu principal
-        main_song.play()
+        self.setFirst = 0
+        self.setBackground()
         #Recibe el diccionario anidado con la informacion de coordenadas de las etiquetas
         self.di_coor = self.labelSet()
-        #Agrega los event handlers a el objeto window
+        self.pushHandler()
+    #Agrega el fondo correspondiente a la pantalla actual
+    def setBackground(self):
+        if self.setFirst == 0:
+            #Carga ka imagen de fondo del menu principal
+            background_menu = pyglet.image.load('../images/background.png')
+            #Crea un sprite a partir de la imagen cargada
+            background_menu_sprite = pyglet.sprite.Sprite(background_menu)
+            #Asigna el sprite al background del juego
+            self.window.background = background_menu_sprite
+    #Funcion que controla la apariencia del menu principal
+    def menuMenu(self):
+        if self.setFirst == 0:
+            self.pushHandler()
+            self.setFirst = 1
+        self.labeldraw()
+    #Agrega los event handlers a el objeto window
+    def pushHandler(self):
         self.window.push_handlers(self.on_mouse_press, self.on_mouse_motion)
     #Se crean las etiquetas del menu principal y retornando informacion en un diccionario
     def labelSet(self):
@@ -109,14 +114,15 @@ class Menu:
                 self.state = 1
             elif (di_la_x["label2"] - di_la_cw["label2"]/2 < x < di_la_x["label2"] + di_la_cw["label2"]/2 and 
                 di_la_y["label2"] - di_la_ch["label2"]/2 < y < di_la_y["label2"] + di_la_ch["label2"]/2):
-                print('Bienvenido a las opciones')
                 self.state = 2
+                self.setFirst = 1
+                self.window.remove_handlers(self.on_mouse_press, self.on_mouse_motion)
             elif (di_la_x["label3"] - di_la_cw["label3"]/2 < x < di_la_x["label3"] + di_la_cw["label3"]/2 and 
                 di_la_y["label3"] - di_la_ch["label3"]/2 < y < di_la_y["label3"] + di_la_ch["label3"]/2):
                 #Cierra la ventana del juego
                 self.window.close()
             else:
-                print('AMONGUS')
+                print('---empty-click---')
     #Funcion que define que codigo ejecutar cuando se mueve el mouse
     def on_mouse_motion(self, x, y, dx, dy):
         di_la_x = self.di_coor['di_la_x']
@@ -137,7 +143,7 @@ class Menu:
             labels["label1"].color = (255, 255, 255, 255)
             labels["label2"].color = (255, 255, 255, 255)
             labels["label3"].color = (255, 255, 255, 255)
-        #Cambia el valor de la variable state
+        
     #Retorna el ancho de la ventana del juego
     def getWidth(self):
         return self.window.width

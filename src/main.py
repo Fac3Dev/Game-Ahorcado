@@ -17,10 +17,19 @@ window.set_maximum_size(1680, 900)
 icon = pyglet.image.load('../images/icon.png')
 #Establece el icono cargado
 window.set_icon(icon)
+#Agrega un tipo de letra externo
+pyglet.font.add_file('../fonts/DeliciousHandrawn_Regular.ttf')
+#Carga el tipo de letra con el nombre indicado
+DeliciousHandrawn_Regular = pyglet.font.load('Delicious Handrawn')
+#Carga la cancion del menu principal
+main_song = pyglet.media.load('../sounds/creepy_mood.wav', streaming=False)
+#reproduce la cancion del menu principal
+main_song.play()
 #Se crean los objetos de las diferentes pantallas del juego
 menu = Menu(window)
-opciones = Opciones()
-game = Game()
+opciones = Opciones(window)
+game = Game(window)
+
 # Función de dibujo que se llama cada vez que la ventana necesita actualizarse
 @window.event
 def on_draw():
@@ -29,15 +38,30 @@ def on_draw():
     game_state = menu.state
     #Menu principal
     if game_state == 0:
+        menu.setBackground()
         window.background.draw()
-        menu.labeldraw()
+        menu.menuMenu()
+        
     #Gameplay del juego
     elif game_state == 1:
+        window.background.draw()
         print('in game')
+        #main_song.pause()
         game.test2()
     #Pantalla de opciones
     elif game_state == 2:
-        print('in options')
-        opciones.test2()
+        opciones.setBackground()
+        window.background.draw()
+        opciones.menuOpciones()
+
+        #Comprueba si debe regresar al menu principal
+        if opciones.state == 0:
+            #Reiniciar las variable de estado de el menu principal
+            menu.state = 0
+            menu.setFirst = 0
+            #Reiniciar las variable de estado de el menu de opciones
+            opciones.state = 2
+            opciones.setFirst = 0
+
 # Ejecutar la aplicación
 pyglet.app.run()
